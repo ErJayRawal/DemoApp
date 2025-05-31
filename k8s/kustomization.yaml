@@ -13,3 +13,9 @@ resources:
   - demoapp-deployment.yaml
   - demoapp-service.yaml
   - ingress.yaml
+  # Monitoring resources
+  - monitoring/prometheus-config.yaml
+  - monitoring/prometheus.yaml
+  - monitoring/grafana.yaml
+  - monitoring/monitoring-ingress.yaml
+  - monitoring/zipkin.yaml

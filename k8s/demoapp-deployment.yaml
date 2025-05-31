@@ -26,6 +26,8 @@ spec:
           value: "27017"
         - name: SPRING_DATA_MONGODB_DATABASE
           value: demodb
+        - name: SPRING_PROFILES_ACTIVE
+          value: "docker"
         readinessProbe:
           httpGet:
             path: /actuator/health
