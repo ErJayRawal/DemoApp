@@ -16,20 +16,25 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - demoapp-network
       
   mongo-express:
     image: mongo-express:latest
     container_name: demo-mongo-express
     environment:
-      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_SERVER: demo-mongodb
       ME_CONFIG_MONGODB_PORT: 27017
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: pass
     ports:
       - "8081:8081"
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
     restart: unless-stopped
+    networks:
+      - demoapp-network
     
   demoapp:
     build:
@@ -37,14 +42,28 @@ services:
       dockerfile: Dockerfile
     container_name: demo-app
     environment:
-      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_HOST: demo-mongodb
       SPRING_DATA_MONGODB_PORT: 27017
       SPRING_DATA_MONGODB_DATABASE: demodb
+      SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8080:8080"
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
     restart: unless-stopped
+    networks:
+      - demoapp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  demoapp-network:
+    driver: bridge
 
 volumes:
   mongodb-data:
