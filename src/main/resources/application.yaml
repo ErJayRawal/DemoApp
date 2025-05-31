@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: DemoApp
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: demodb
+      auto-index-creation: true
